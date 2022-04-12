@@ -22,14 +22,14 @@ class ArtInstituteApi():
 
 
     # define a function 
-    def api_connect(self):
+    def api_connect(self, url, resources, page_pace):
 
-        page_n = self.page_pace
-        resource = self.resources
-        in_url = self.url
+        page_n = page_pace
+        resource = resources
+        in_url = url
 
         # keep iterating until we hit the page_n limit
-        while page_n == self.page_pace:
+        while page_n == page_pace:
 
             # append the url  with limit args and page args
             full_url = in_url + resource + '?limit=' + str(page_n)
@@ -46,7 +46,7 @@ class ArtInstituteApi():
 
 
     # function to pull data from api and store to disk 
-    def api_to_disk(self):
+    def api_to_disk(self, url, resources, page_pace, out_path):
     
         # store in different list 
         artwork_list = []
@@ -54,10 +54,10 @@ class ArtInstituteApi():
         place_list = []
 
         # begin loop
-        for res in self.resources:
+        for res in resources:
 
             # create output path template
-            output_template = os.path.join(self.out_path, date.today().strftime("%Y%m%d"),  f'{res}.jsonl')
+            output_template = os.path.join(out_path, date.today().strftime("%Y%m%d"),  f'{res}.jsonl')
 
             os.makedirs(os.path.dirname(output_template), exist_ok=True)
 
@@ -65,7 +65,7 @@ class ArtInstituteApi():
             logging.info(f'pulling {res} from api')
 
             # call function that pulls data 
-            out = self.api_connect(self.url, res, self.page_pace)
+            out = self.api_connect(url, res, page_pace)
             
             # open the path to write on it
             with open(output_template, 'w') as f:
@@ -89,3 +89,5 @@ class ArtInstituteApi():
 
         # spits out list of paths
         return(artwork_list, artist_list, place_list)
+
+    
